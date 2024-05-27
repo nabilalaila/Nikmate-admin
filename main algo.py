@@ -383,7 +383,7 @@ def lihatjadwal():
         key = date_to_key(hari)
         if key in reservations_by_date:
             for reservasi in reservations_by_date[key]:
-                print(f"{nomor}. Nomor Reservasi   : {reservasi[0]}\n   Pengantin         : {reservasi[5]}  \n   Waktu             : {reservasi[2]}\n   Nama Paket        : Paket {reservasi[6]}\n   Status Pembayaran : {reservasi[8]}\n   Jumlah Undangan   : {reservasi[4]}\n   Catatan           : {reservasi[3]}\n")
+                print(f"{nomor}. Nomor Reservasi   : {reservasi[0]}\n   Pengantin         : {reservasi[5]}  \n   Waktu             : {reservasi[2]}\n   Nama Paket        : Paket {reservasi[6]}\n   Status Pembayaran : {reservasi[8]}\n   Jumlah Undangan   : {reservasi[4]}\n   Catatan           : {reservasi[3]}\n   MC                : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[0], 'jenis_petugas': 'MC'})}\n   Tim Hadrah        : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[0], 'jenis_petugas': 'Tim Hadrah'})}\n   Mubaligh          : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[0], 'jenis_petugas': 'Mubaligh'})}\n   Qori'             : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[0], 'jenis_petugas': 'Qori'})}\n")
             nomor += 1
     if nomor == 1:
             print("\nTidak ada pernikahan minggu ini")
@@ -456,7 +456,7 @@ def caririwayatreservasi():
             while end < n and reservasi[end][data_cari].date() == target:
                 end += 1
             for i in range(start, end):
-                print(f"{nomor}. Nomor Reservasi   : {reservasi[i][0]}\n   Pengantin         : {reservasi[i][5]}  \n   Waktu             : {reservasi[i][2]}\n   Nama Paket        : Paket {reservasi[i][6]}\n   Status Pembayaran : {reservasi[i][8]}\n   Jumlah Undangan   : {reservasi[i][4]}\n   Catatan           : {reservasi[i][3]}\n")
+                print(f"{nomor}. Nomor Reservasi   : {reservasi[i][0]}\n   Pengantin         : {reservasi[i][5]}  \n   Waktu             : {reservasi[i][2]}\n   Nama Paket        : Paket {reservasi[i][6]}\n   Status Pembayaran : {reservasi[i][8]}\n   Jumlah Undangan   : {reservasi[i][4]}\n   Catatan           : {reservasi[i][3]}\n   MC                : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[i][0], 'jenis_petugas': 'MC'})}\n   Tim Hadrah        : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[i][0], 'jenis_petugas': 'Tim Hadrah'})}\n   Mubaligh          : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[i][0], 'jenis_petugas': 'Mubaligh'})}\n   Qori'             : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[i][0], 'jenis_petugas': 'Qori'})}\n")
                 nomor += 1
         else:
             os.system("cls")
@@ -477,7 +477,7 @@ def caririwayatreservasi():
         if prev < n and reservasi[prev][0] == target:
             os.system("cls")
             print("Hasil Pencarian".center(115))
-            print(f"Nomor Reservasi   : {reservasi[prev][0]}\nPengantin         : {reservasi[prev][5]}  \nWaktu             : {reservasi[prev][2]}\nNama Paket        : Paket {reservasi[prev][6]}\nStatus Pembayaran : {reservasi[prev][8]}\nJumlah Undangan   : {reservasi[prev][4]}\nCatatan           : {reservasi[prev][3]}")
+            print(f"{nomor}. Nomor Reservasi   : {reservasi[prev][0]}\n   Pengantin         : {reservasi[prev][5]}  \n   Waktu             : {reservasi[prev][2]}\n   Nama Paket        : Paket {reservasi[prev][6]}\n   Status Pembayaran : {reservasi[prev][8]}\n   Jumlah Undangan   : {reservasi[prev][4]}\n   Catatan           : {reservasi[prev][3]}\n   MC                : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[prev][0], 'jenis_petugas': 'MC'})}\n   Tim Hadrah        : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[prev][0], 'jenis_petugas': 'Tim Hadrah'})}\n   Mubaligh          : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[prev][0], 'jenis_petugas': 'Mubaligh'})}\n   Qori'             : {petugasnikah.detailpetugas({'id_reservasi' : reservasi[prev][0], 'jenis_petugas': 'Qori'})}\n")
         else:
             os.system("cls")
             print("Data tidak ditemukan".center(115))
