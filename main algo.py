@@ -26,7 +26,7 @@ def login():
 def menuadmin():
     os.system("cls")
     print("Selamat datang di menu admin. Pilih menu yang kamu inginkan\n".center(115))
-    menu_admin = input("|1| Input Reservasi\n|2| Tambah data petugas pernikahan\n|3| Hapus data petugas Pernikahan\n|4| Edit data petugas pernikahan\n|5| Lihat Jadwal Pernikahan Hari Ini dan Besok \n|6| Cari Riwayat Reservasi\n|7| Keluar Aplikasi\nPilih => ")
+    menu_admin = input("|1| Input Reservasi\n|2| Tambah data petugas pernikahan\n|3| Hapus data petugas Pernikahan\n|4| Edit data petugas pernikahan\n|5| Lihat Jadwal Pernikahan di Minggu Ini \n|6| Cari Riwayat Reservasi\n|7| Keluar Aplikasi\nPilih => ")
     if menu_admin == "1":
         reservasi()
     elif menu_admin == "2":
@@ -88,14 +88,18 @@ def tambah_petugasbaru():
 def hapus_data_petugas():
     os.system("cls")
     print("Pilih data petugas yang ingin dihapus\n".center(115))
-    for petugas in petugasnikah.readpetugas():
-        print(f"{petugas[0]}. Nama Lengkap Petugas  : {petugas[1]}\n   Nomor Telepon Petugas : {petugas[2]}\n   Honorarium Petugas    : {petugas[3]}\n   Jenis Petugas         : {petugas[4]}\n")
+    data = petugasnikah.readpetugas()
+    nomor = 1
+    for petugas in data:
+        print(f"{nomor}. Nama Lengkap Petugas  : {petugas[1]}\n   Nomor Telepon Petugas : {petugas[2]}\n   Honorarium Petugas    : {petugas[3]}\n   Jenis Petugas         : {petugas[4]}\n")
+        nomor += 1
     data_dihapus = input("Pilih Petugas (Ketik nomornya) : ")
-    while data_dihapus.isdigit() == False:
+    while data_dihapus.isdigit() == False or int(data_dihapus) > len(data):
         os.system("cls")
         print("Maaf, inputan harus berupa angka. Klik enter untuk lanjut =>".center(115))
         hapus_data_petugas()
-    hapus = {'id' : int(data_dihapus)}
+    id_dihapus = data[int(data_dihapus)-1][0]
+    hapus = {'id' : id_dihapus}
     petugasnikah.deletepetugas(hapus)
     input("Penghapusan data petugas pernikahan berhasil\nKlik enter untuk lanjut => ".center(115))
     close()
@@ -211,6 +215,7 @@ def data_petugas():
     list_hadrah = petugasnikah.petugashadrah()
     list_mubaligh = petugasnikah.petugasmubaligh()
     list_qori = petugasnikah.petugasqori()
+    global mc_akad, hadrah_akad, mubaligh_akad, qori_akad, id_mc, id_hadrah, id_mubaligh, id_qori
     for mc in list_mc:
         print(f"{nomor}. {mc[1]}")
         nomor += 1
@@ -218,7 +223,8 @@ def data_petugas():
     while pilih_mc.isdigit == False or int(pilih_mc) > len(list_mc):
         input("Maaf, inputan harus berupa angka. Pilih salah satu petugas\nKlik enter untuk lanjut => ")
         data_petugas()
-    global mc_akad, hadrah_akad, mubaligh_akad, qori_akad
+    data_mc = {'jenis_petugas':"MC", 'id_sekarang': int(pilih_mc)}
+    id_mc = petugasnikah.panggilidpetugas(data_mc)
     mc_akad = list_mc[int(pilih_mc) - 1][1]
     os.system("cls")
     print("Pilih petugas pernikahanmu 🤗".center(115))
@@ -231,6 +237,8 @@ def data_petugas():
     while pilih_hadrah.isdigit == False or int(pilih_hadrah) > len(list_hadrah):
         input("Maaf, inputan harus berupa angka. Pilih salah satu petugas\nKlik enter untuk lanjut => ")
         data_petugas()
+    data_hadrah = {'jenis_petugas':"Tim Hadrah", 'id_sekarang': int(pilih_hadrah)}
+    id_hadrah = petugasnikah.panggilidpetugas(data_hadrah)
     hadrah_akad = list_hadrah[int(pilih_hadrah) - 1][1]
     os.system("cls")
     print("Pilih petugas pernikahanmu 🤗".center(115))
@@ -243,6 +251,8 @@ def data_petugas():
     while pilih_mubaligh.isdigit == False or int(pilih_mubaligh) > len(list_mubaligh):
         input("Maaf, inputan harus berupa angka. Pilih salah satu petugas\nKlik enter untuk lanjut => ")
         data_petugas()
+    data_mubaligh = {'jenis_petugas':"Mubaligh", 'id_sekarang': int(pilih_mubaligh)}
+    id_mubaligh = petugasnikah.panggilidpetugas(data_mubaligh)
     mubaligh_akad = list_mubaligh[int(pilih_mubaligh) - 1][1]
     os.system("cls")
     print("Pilih petugas pernikahanmu 🤗".center(115))
@@ -255,38 +265,9 @@ def data_petugas():
     while pilih_qori.isdigit == False or int(pilih_qori) > len(list_qori):
         input("Maaf, inputan harus berupa angka. Pilih salah satu petugas\nKlik enter untuk lanjut => ")
         data_petugas()
+    data_qori = {'jenis_petugas':"Qori", 'id_sekarang': int(pilih_qori)}
+    id_qori = petugasnikah.panggilidpetugas(data_qori)
     qori_akad = list_qori[int(pilih_qori) - 1][1]
-
-
-def data_pembayaran():
-    os.system("cls")
-    print("Pembayaran".center(115))
-    print("Pembayaran dilakukan pada nomor rekening 012344321 (BCA) an. Yayasan Masjid Jami' Al-Baitul Amien Jember".center(115))
-    print("Reservasi tidak akan tersimpan sebelum melakukan transfer\n".center(115))
-    for harga in paketnikah.readpaket():
-        if harga[0] == paket_nikah:
-            print(f"Total Pembayaran : {harga[2]}")
-            break
-    input("Klik enter apabila pelanggan telah melakukan transfer => ")
-    global wkt_tf, pemilik_rek
-    wkt_tf = datetime.now()
-    waktu_tf = wkt_tf.strftime("%Y-%m-%d %H:%M:%S")
-    pemilik_rek = input("Masukkan nama pemilk rekening yang digunakan untuk transfer : ")
-    data_pembayaran = {'waktu_pembayaran' : waktu_tf, 'nama_pemilik_rekening' : pemilik_rek, 'status_konfirmasi': 'Sudah dikonfirmasi'}
-    transaksi.tambahpembayaran(data_pembayaran)
-    tambahkanreservasi()
-
-def tambahkanreservasi():
-    os.system("cls")
-    pembayaran = transaksi.bacapembayaran()
-    last_pembayaran = pembayaran[-1][0]
-    wkt_reservasi = datetime.now()
-    waktu_reservasi = wkt_reservasi.strftime("%Y-%m-%d %H:%M:%S")
-    data_reservasi = {'waktu_reservasi': waktu_reservasi, 'waktu_akad_nikah' : waktu_akad, 'catatan_pengantin': catatan, 'jumlah_undangan' : undangan_akad, 'nama_pengantin_pria' : nama_pengantin_pria, 'nama_pengantin_wanita' : nama_pengantin_wanita, 'id_paket' : paket_nikah, 'id_admin': 1, 'id_pembayaran' : last_pembayaran, 'id_pengguna' : 1}
-    transaksi.tambahreservasi(data_reservasi)
-    print("Selamat! Reservasi berhasil dilakukan 🙌".center(115))
-    input("Klik enter untuk melanjutkan => ")
-    close()
 
 def jumlah_undangan():
     os.system("cls")
@@ -342,14 +323,52 @@ def konfirmasi_reservasi():
         input("Maaf, inputan tidak valid. Klik enter untuk lanjut => ")
         konfirmasi_reservasi()
 
+def tambahpetugas():
+    reservasi = transaksi.bacareservasi()
+    last_reservasi = reservasi[-1][0]
+    id_petugas = [id_mc, id_hadrah, id_mubaligh, id_qori]
+    for petugas in id_petugas:
+        detail_petugas = {'id_reservasi': last_reservasi, 'id_petugas':petugas}
+        petugasnikah.tambahkedetail(detail_petugas)
+   
+def data_pembayaran():
+    os.system("cls")
+    print("Pembayaran".center(115))
+    print("Pembayaran dilakukan pada nomor rekening 012344321 (BCA) an. Yayasan Masjid Jami' Al-Baitul Amien Jember".center(115))
+    print("Reservasi tidak akan tersimpan sebelum melakukan transfer\n".center(115))
+    for harga in paketnikah.readpaket():
+        if harga[0] == paket_nikah:
+            print(f"Total Pembayaran : {harga[2]}")
+            break
+    input("Klik enter apabila pelanggan telah melakukan transfer => ")
+    global wkt_tf, pemilik_rek
+    wkt_tf = datetime.now()
+    waktu_tf = wkt_tf.strftime("%Y-%m-%d %H:%M:%S")
+    pemilik_rek = input("Masukkan nama pemilk rekening yang digunakan untuk transfer : ")
+    data_pembayaran = {'waktu_pembayaran' : waktu_tf, 'nama_pemilik_rekening' : pemilik_rek, 'status_konfirmasi': 'Sudah dikonfirmasi'}
+    transaksi.tambahpembayaran(data_pembayaran)
+    tambahkanreservasi()
+
+def tambahkanreservasi():
+    os.system("cls")
+    pembayaran = transaksi.bacapembayaran()
+    last_pembayaran = pembayaran[-1][0]
+    wkt_reservasi = datetime.now()
+    waktu_reservasi = wkt_reservasi.strftime("%Y-%m-%d %H:%M:%S")
+    data_reservasi = {'waktu_reservasi': waktu_reservasi, 'waktu_akad_nikah' : waktu_akad, 'catatan_pengantin': catatan, 'jumlah_undangan' : undangan_akad, 'nama_pengantin_pria' : nama_pengantin_pria, 'nama_pengantin_wanita' : nama_pengantin_wanita, 'id_paket' : paket_nikah, 'id_admin': 1, 'id_pembayaran' : last_pembayaran, 'id_pengguna' : 1}
+    transaksi.tambahreservasi(data_reservasi)
+    print("Selamat! Reservasi berhasil dilakukan 🙌".center(115))
+    input("Klik enter untuk melanjutkan => ")
+    tambahpetugas()
+    close()
+
 def lihatjadwal():
     os.system("cls")
     print("Jadwal Pernikahan".center(115))
     reservations_by_date = {}
     def date_to_key(date):
         return date.strftime("%Y-%m-%d")
-    today = datetime.today().date()
-    tomorrow = today + timedelta(days=1)
+    today = datetime.now().date()
     for reservasi in transaksi.riwayatreservasi():
         reservation_date = reservasi[2].date()
         key = date_to_key(reservation_date)
@@ -357,21 +376,17 @@ def lihatjadwal():
             reservations_by_date[key] = []
         reservations_by_date[key].append(reservasi)
     nomor = 1
-    today_key = date_to_key(today)
-    if today_key in reservations_by_date:
-        print("\nPernikahan Hari Ini".center(115))
-        for reservasi in reservations_by_date[today_key]:
-            print(f"{nomor}. Nomor Reservasi   : {reservasi[0]}\n   Pengantin         : {reservasi[5]}  \n   Waktu             : {reservasi[2]}\n   Nama Paket        : Paket {reservasi[6]}\n   Status Pembayaran : {reservasi[8]}\n   Jumlah Undangan   : {reservasi[4]}\n   Catatan           : {reservasi[3]}")
+    os.system("cls")
+    print("Jadwal pernikahan minggu ini".center(115))
+    for day in range(8):
+        hari = today + timedelta(days=day)
+        key = date_to_key(hari)
+        if key in reservations_by_date:
+            for reservasi in reservations_by_date[key]:
+                print(f"{nomor}. Nomor Reservasi   : {reservasi[0]}\n   Pengantin         : {reservasi[5]}  \n   Waktu             : {reservasi[2]}\n   Nama Paket        : Paket {reservasi[6]}\n   Status Pembayaran : {reservasi[8]}\n   Jumlah Undangan   : {reservasi[4]}\n   Catatan           : {reservasi[3]}\n")
             nomor += 1
-    else:
-        print("\nTidak ada pernikahan hari ini".center(115))
-    tomorrow_key = date_to_key(tomorrow)
-    if tomorrow_key in reservations_by_date:
-        print("\nPernikahan Besok".center(115))
-        for reservasi in reservations_by_date[tomorrow_key]:
-            print(f"{nomor}. Nomor Reservasi   : {reservasi[0]}\n   Pengantin         : {reservasi[5]}  \n   Waktu             : {reservasi[2]}\n   Nama Paket        : Paket {reservasi[6]}\n   Status Pembayaran : {reservasi[8]}\n   Jumlah Undangan   : {reservasi[4]}\n   Catatan           : {reservasi[3]}")
-    else:
-        print("\nTidak ada pernikahan besok".center(115))
+    if nomor == 1:
+            print("\nTidak ada pernikahan minggu ini")
     pilih_menu = input("|1| Kembali ke menu utama\n|2| Keluar dari aplikasi\nPilih=> ")
     if pilih_menu == "1":
         menuadmin() 
@@ -384,7 +399,30 @@ def lihatjadwal():
 def caririwayatreservasi():
     os.system("cls")
     print("Cari Riwayat Reservasi".center(115))
-    reservasi = transaksi.reservasiterurut()  
+    data = transaksi.riwayatreservasi()
+    tanggal_akad = [day[2] for day in data]
+    def ms(list):
+        n = len(list)
+        if n < 2:
+            return list
+        else:
+            mid=n//2
+            left=list[:mid]
+            right=list[mid:]
+            left_sorted = ms(left)
+            right_sorted = ms(right)
+            return merge(left_sorted, right_sorted)
+    def merge(left, right):
+        result = []
+        while left and right:
+            if left[0][2] <= right[0][2]: 
+                result.append(left.pop(0))
+            else:
+                result.append(right.pop(0))
+        
+        result.extend(left if left else right)
+        return result        
+    reservasi = ms(data)  
     n = len(reservasi)
     step = int(n ** 0.5)
     prev = 0
@@ -397,8 +435,7 @@ def caririwayatreservasi():
         tahun = int(input("Tahun (isi menggunakan angka)   : "))
         bulan = int(input("Bulan (isi menggunakan angka)   : "))
         hari = int(input("Tanggal (isi menggunakan angka) : "))
-        target = datetime(tahun,bulan,hari).date()
-        reservasi = transaksi.reservasiterurut()  
+        target = datetime(tahun,bulan,hari).date() 
         while prev < n and reservasi[min(step, n) - 1][data_cari].date() < target:
             prev = step
             step += int(n ** 0.5)
@@ -419,7 +456,7 @@ def caririwayatreservasi():
             while end < n and reservasi[end][data_cari].date() == target:
                 end += 1
             for i in range(start, end):
-                print(f"{nomor}. Nomor Reservasi   : {reservasi[i][0]}\n   Pengantin         : {reservasi[i][5]}  \n   Waktu             : {reservasi[i][2]}\n   Nama Paket        : Paket {reservasi[i][6]}\n   Status Pembayaran : {reservasi[i][8]}\n   Jumlah Undangan   : {reservasi[i][4]}\n   Catatan           : {reservasi[i][3]}")
+                print(f"{nomor}. Nomor Reservasi   : {reservasi[i][0]}\n   Pengantin         : {reservasi[i][5]}  \n   Waktu             : {reservasi[i][2]}\n   Nama Paket        : Paket {reservasi[i][6]}\n   Status Pembayaran : {reservasi[i][8]}\n   Jumlah Undangan   : {reservasi[i][4]}\n   Catatan           : {reservasi[i][3]}\n")
                 nomor += 1
         else:
             os.system("cls")
@@ -440,7 +477,7 @@ def caririwayatreservasi():
         if prev < n and reservasi[prev][0] == target:
             os.system("cls")
             print("Hasil Pencarian".center(115))
-            print(f"Nomor Reservasi   : {reservasi[prev][0]}\n   Pengantin         : {reservasi[prev][5]}  \n   Waktu             : {reservasi[prev][2]}\n   Nama Paket        : Paket {reservasi[prev][6]}\n   Status Pembayaran : {reservasi[prev][8]}\n   Jumlah Undangan   : {reservasi[prev][4]}\n   Catatan           : {reservasi[prev][3]}")
+            print(f"Nomor Reservasi   : {reservasi[prev][0]}\nPengantin         : {reservasi[prev][5]}  \nWaktu             : {reservasi[prev][2]}\nNama Paket        : Paket {reservasi[prev][6]}\nStatus Pembayaran : {reservasi[prev][8]}\nJumlah Undangan   : {reservasi[prev][4]}\nCatatan           : {reservasi[prev][3]}")
         else:
             os.system("cls")
             print("Data tidak ditemukan".center(115))
