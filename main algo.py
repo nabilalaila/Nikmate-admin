@@ -111,10 +111,14 @@ def menu_edit_petugas():
 def edit_data_petugas():
     os.system("cls")
     print("Pilih data petugas yang ingin diubah\n".center(115))
-    for petugas in petugasnikah.readpetugas():
-        print(f"{petugas[0]}. Nama Lengkap Petugas  : {petugas[1]}\n   Nomor Telepon Petugas : {petugas[2]}\n   Honorarium Petugas    : {petugas[3]}\n   Jenis Petugas         : {petugas[4]}\n")
-    global data_diedit
+    nomor = 1
+    data = petugasnikah.readpetugas()
+    for petugas in data:
+        print(f"{nomor}. Nama Lengkap Petugas  : {petugas[1]}\n   Nomor Telepon Petugas : {petugas[2]}\n   Honorarium Petugas    : {petugas[3]}\n   Jenis Petugas         : {petugas[4]}\n")
+        nomor+=1
+    global id_edit
     data_diedit = input("Pilih Petugas (Ketik nomornya) : ")
+    id_edit = data[int(data_diedit)-1][0]
     while data_diedit.isdigit() == False:
         os.system("cls")
         input("Maaf, inputan harus berupa angka. Klik enter untuk lanjut =>".center(115))
@@ -124,7 +128,7 @@ def edit_data_petugas():
     input_data_petugas()
     
 def update_petugas():
-    petugas_baru['id'] = int(data_diedit)
+    petugas_baru['id'] = int(id_edit)
     petugasnikah.updatepetugas(petugas_baru)
     os.system("cls")
     input("Edit data petugas pernikahan berhasil\nKlik enter untuk lanjut => ".center(115))
@@ -136,6 +140,8 @@ def reservasi():
     data_waktu()
     data_petugas()
     jumlah_undangan()
+    catatan_pengantin()
+    konfirmasi_reservasi()
 
 def data_pengantin():
     os.system("cls")
@@ -275,7 +281,7 @@ def jumlah_undangan():
     print("Jumlah Undangan\n".center(115))
     undangan_akad = input("Masukkan jumlah undangan yang hadir saat acara (Maksimal 100 orang) : ")
     if int(undangan_akad) <= 100:
-        catatan_pengantin()
+        pass
     else:
         input("Inputan tidak sesuai. Jumlah undangan tidak boleh lebih dari 100 orang. Klik enter untuk lanjut => ")
         jumlah_undangan()
@@ -286,7 +292,6 @@ def catatan_pengantin():
     print("Isi dengan tanda '-' apabila tidak ingin menambah catatan\n".center(115))
     global catatan
     catatan = input("Catatan (Contoh: Tolong pakai bunga melati di meja akad): ")
-    konfirmasi_reservasi()
 
 def konfirmasi_reservasi():
     os.system("cls")
@@ -297,26 +302,22 @@ def konfirmasi_reservasi():
         data_pembayaran()
     elif pilih_konfirm == "2":
         data_pengantin()
-        data_paket()
-        data_waktu()
-        data_petugas()
-        jumlah_undangan()
+        konfirmasi_reservasi()
     elif pilih_konfirm == "3":
         data_paket()
-        data_waktu()
-        data_petugas()
-        jumlah_undangan()
+        konfirmasi_reservasi()
     elif pilih_konfirm == "4":
         data_waktu()
-        data_petugas()
-        jumlah_undangan()
+        konfirmasi_reservasi()
     elif pilih_konfirm == "5":
         data_petugas()
-        jumlah_undangan()
+        konfirmasi_reservasi()
     elif pilih_konfirm == "6":
         jumlah_undangan()
+        konfirmasi_reservasi()
     elif pilih_konfirm == "7":
         catatan_pengantin()
+        konfirmasi_reservasi()
     elif pilih_konfirm == "8":
         close()
     else: 
@@ -400,7 +401,6 @@ def caririwayatreservasi():
     os.system("cls")
     print("Cari Riwayat Reservasi".center(115))
     data = transaksi.riwayatreservasi()
-    tanggal_akad = [day[2] for day in data]
     def ms(list):
         n = len(list)
         if n < 2:
@@ -419,7 +419,6 @@ def caririwayatreservasi():
                 result.append(left.pop(0))
             else:
                 result.append(right.pop(0))
-        
         result.extend(left if left else right)
         return result        
     reservasi = ms(data)  
